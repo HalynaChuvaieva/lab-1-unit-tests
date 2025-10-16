@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Graph.h"
 #include "BinarySearchTree.h"
-#include "Vehicle.h"
 using namespace std;
 
 template <typename T>
