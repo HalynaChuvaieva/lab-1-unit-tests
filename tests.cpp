@@ -2,6 +2,9 @@
 #include <iostream>
 #include "catch.hpp"
 #include "BinarySearchTree.h"
+#include "BalancedBST.h"
+#include "TestBalancedBST.h"
+#include "Graph.h"
 #include <sstream>
 
 TEST_CASE("BinarySearchTree Insert works correctly", "[BST][insert]")
@@ -100,4 +103,117 @@ TEST_CASE("BinarySearchTree delete single element", "[BST][single]")
     bst.display();
     std::cout.rdbuf(oldCout);
     REQUIRE(output.str() == "\n");
+}
+
+TEST_CASE("BalancedBST getHeight returns 0 for empty tree", "[BalancedBST][height][empty]")
+{
+    TestBalancedBST<int> tree;
+    REQUIRE(tree.getHeight() == 0);
+}
+
+TEST_CASE("BalancedBST getHeight returns 1 for single node", "[BalancedBST][height][single]")
+{
+    TestBalancedBST<int> tree;
+    tree.insert(10);
+    REQUIRE(tree.getHeight() == 1);
+}
+
+TEST_CASE("BalancedBST getHeight for balanced tree", "[BalancedBST][height][balanced]")
+{
+    TestBalancedBST<int> tree;
+    tree.insert(4);
+    tree.insert(2);
+    tree.insert(6);
+    tree.insert(1);
+    tree.insert(3);
+    tree.insert(5);
+    tree.insert(7);
+    REQUIRE(tree.getHeight() == 3);
+}
+
+TEST_CASE("BalancedBST getHeight for left-skewed tree", "[BalancedBST][height][left]")
+{
+    TestBalancedBST<int> tree;
+    tree.insert(5);
+    tree.insert(4);
+    tree.insert(3);
+    tree.insert(2);
+    tree.insert(1);
+    REQUIRE(tree.getHeight() == 5);
+}
+
+TEST_CASE("BalancedBST getHeight for right-skewed tree", "[BalancedBST][height][right]")
+{
+    TestBalancedBST<int> tree;
+    tree.insert(1);
+    tree.insert(2);
+    tree.insert(3);
+    tree.insert(4);
+    tree.insert(5);
+    REQUIRE(tree.getHeight() == 5);
+}
+
+TEST_CASE("Graph addEdge adds edges in both directions", "[Graph][addEdge]")
+{
+    Graph<int> g;
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+
+    REQUIRE(g.adj[1] == std::vector<int>{2, 3});
+    REQUIRE(g.adj[2] == std::vector<int>{1});
+    REQUIRE(g.adj[3] == std::vector<int>{1});
+}
+
+TEST_CASE("Graph buildSpanningTree builds a correct DFS tree", "[Graph][spanningTree]")
+{
+    Graph<int> g;
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 4);
+    g.addEdge(3, 5);
+
+    std::ostringstream output;
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
+    g.buildSpanningTree(1);
+    std::cout.rdbuf(oldCout);
+
+    std::string out = output.str();
+    REQUIRE(out.find("Spanning tree consists of edges:") != std::string::npos);
+
+    REQUIRE(
+        (out.find("1 - 2") != std::string::npos &&
+         out.find("1 - 3") != std::string::npos));
+}
+
+TEST_CASE("Graph bfs traverses in correct order", "[Graph][bfs]")
+{
+    Graph<int> g;
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 4);
+    g.addEdge(3, 5);
+
+    std::ostringstream output;
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
+    g.bfs(1);
+    std::cout.rdbuf(oldCout);
+
+    std::string expectedPrefix = "BFS traversal starting from 1: ";
+    REQUIRE(output.str().find(expectedPrefix) == 0);
+
+    REQUIRE(output.str().find("1 2 3 4 5") != std::string::npos);
+}
+
+TEST_CASE("Graph bfs handles isolated vertex", "[Graph][bfs][isolated]")
+{
+    Graph<int> g;
+    g.addEdge(1, 2);
+    g.addEdge(3, 4);
+
+    std::ostringstream output;
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
+    g.bfs(3);
+    std::cout.rdbuf(oldCout);
+
+    REQUIRE(output.str().find("BFS traversal starting from 3: 3 4") != std::string::npos);
 }
