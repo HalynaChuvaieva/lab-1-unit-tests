@@ -137,6 +137,22 @@ TEST_CASE("BinarySearchTree delete single element", "[BST][single]")
     REQUIRE(parseOutputToVector(output).empty());
 }
 
+TEST_CASE("BinarySearchTree remove non-existent key leaves tree unchanged", "[BST][remove][non-existent]")
+{
+    BinarySearchTree<int> bst;
+    bst.insert(10);
+    bst.insert(5);
+    bst.insert(15);
+
+    REQUIRE_NOTHROW(bst.remove(99));
+    std::string output = captureCout([&]()
+                                     { bst.display(); });
+    std::vector<int> actual = parseOutputToVector(output);
+    std::vector<int> expected = {5, 10, 15};
+
+    REQUIRE(actual == expected);
+}
+
 TEST_CASE("BalancedBST getHeight returns 0 for empty tree", "[BalancedBST][height][empty]")
 {
     TestBalancedBST<int> tree;
