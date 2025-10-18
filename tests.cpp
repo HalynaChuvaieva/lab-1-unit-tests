@@ -220,20 +220,24 @@ TEST_CASE("Graph addEdge adds edges in both directions", "[Graph][addEdge]")
     REQUIRE(g.adj[3] == std::vector<int>{1});
 }
 
-TEST_CASE("Graph buildSpanningTree builds a correct DFS tree", "[Graph][spanningTree]")
+TEST_CASE("Graph buildSpanningTree returns correct DFS edges", "[Graph][spanningTree]")
 {
     Graph<int> g;
     g.addEdge(1, 2);
     g.addEdge(1, 3);
     g.addEdge(2, 4);
     g.addEdge(3, 5);
-    std::string out = captureCout([&]()
-                                  { g.buildSpanningTree(1); });
-    REQUIRE(out.find("Spanning tree consists of edges:") != std::string::npos);
+    std::vector<std::pair<int, int>> actualEdges = g.buildSpanningTree(1);
+    std::vector<std::pair<int, int>> expectedEdges = {
+        {1, 2},
+        {2, 4},
+        {1, 3},
+        {3, 5}};
+    std::sort(actualEdges.begin(), actualEdges.end());
+    std::sort(expectedEdges.begin(), expectedEdges.end());
 
-    REQUIRE(
-        (out.find("1 - 2") != std::string::npos &&
-         out.find("1 - 3") != std::string::npos));
+    REQUIRE(actualEdges.size() == 4);
+    REQUIRE(actualEdges == expectedEdges);
 }
 
 TEST_CASE("Graph bfs traverses in correct order", "[Graph][bfs]")
