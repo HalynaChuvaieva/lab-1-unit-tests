@@ -6,6 +6,42 @@
 #include "TestBalancedBST.h"
 #include "Graph.h"
 #include <sstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+template <typename Func>
+std::string captureCout(Func func)
+{
+    std::ostringstream output;
+    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
+    func();
+    std::cout.rdbuf(oldCout);
+    return output.str();
+}
+std::vector<int> parseOutputToVector(const std::string &output)
+{
+    std::vector<int> result;
+    size_t start = output.find(':');
+
+    if (start == std::string::npos)
+    {
+        start = 0;
+    }
+    else
+    {
+        start += 1;
+    }
+
+    std::stringstream ss(output.substr(start));
+    int value;
+
+    while (ss >> value)
+    {
+        result.push_back(value);
+    }
+    return result;
+}
 
 TEST_CASE("BinarySearchTree Insert works correctly", "[BST][insert]")
 {
@@ -17,11 +53,12 @@ TEST_CASE("BinarySearchTree Insert works correctly", "[BST][insert]")
     bst.insert(40);
     bst.insert(60);
     bst.insert(80);
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout);
-    REQUIRE(output.str() == "20 30 40 50 60 70 80 \n");
+
+    std::string output = captureCout([&]()
+                                     { bst.display(); });
+    std::vector<int> actual = parseOutputToVector(output);
+    std::vector<int> expected = {20, 30, 40, 50, 60, 70, 80};
+    REQUIRE(actual == expected);
 }
 TEST_CASE("BinarySearchTree minValue returns smallest node", "[BST][minValue]")
 {
@@ -52,35 +89,30 @@ TEST_CASE("BinarySearchTree deleteNode removes elements correctly", "[BST][delet
     bst.insert(40);
     bst.insert(60);
     bst.insert(80);
+
     bst.remove(20);
-    std::ostringstream output1;
-    std::streambuf *oldCout1 = std::cout.rdbuf(output1.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout1);
-    REQUIRE(output1.str() == "30 40 50 60 70 80 \n");
+    std::string output1 = captureCout([&]()
+                                      { bst.display(); });
+    REQUIRE(parseOutputToVector(output1) == std::vector<int>{30, 40, 50, 60, 70, 80});
     bst.remove(30);
-    std::ostringstream output2;
-    std::streambuf *oldCout2 = std::cout.rdbuf(output2.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout2);
-    REQUIRE(output2.str() == "40 50 60 70 80 \n");
+    std::string output2 = captureCout([&]()
+                                      { bst.display(); });
+    REQUIRE(parseOutputToVector(output2) == std::vector<int>{40, 50, 60, 70, 80});
     bst.remove(50);
-    std::ostringstream output3;
-    std::streambuf *oldCout3 = std::cout.rdbuf(output3.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout3);
-    REQUIRE(output3.str() == "40 60 70 80 \n");
+    std::string output3 = captureCout([&]()
+                                      { bst.display(); });
+    REQUIRE(parseOutputToVector(output3) == std::vector<int>{40, 60, 70, 80});
 }
 TEST_CASE("BinarySearchTree handles empty tree correctly", "[BST][empty]")
 {
     BinarySearchTree<int> bst;
     REQUIRE_NOTHROW(bst.remove(10));
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout);
-    REQUIRE(output.str() == "\n");
+    std::string output = captureCout([&]()
+                                     { bst.display(); });
+
+    REQUIRE(parseOutputToVector(output).empty());
 }
+
 TEST_CASE("BinarySearchTree ignores duplicate insertions", "[BST][duplicates]")
 {
     BinarySearchTree<int> bst;
@@ -89,22 +121,20 @@ TEST_CASE("BinarySearchTree ignores duplicate insertions", "[BST][duplicates]")
     bst.insert(15);
     bst.insert(10);
     bst.insert(15);
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout);
-    REQUIRE(output.str() == "5 10 15 \n");
+
+    std::string output = captureCout([&]()
+                                     { bst.display(); });
+    REQUIRE(parseOutputToVector(output) == std::vector<int>{5, 10, 15});
 }
+
 TEST_CASE("BinarySearchTree delete single element", "[BST][single]")
 {
     BinarySearchTree<int> bst;
     bst.insert(42);
     bst.remove(42);
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    bst.display();
-    std::cout.rdbuf(oldCout);
-    REQUIRE(output.str() == "\n");
+    std::string output = captureCout([&]()
+                                     { bst.display(); });
+    REQUIRE(parseOutputToVector(output).empty());
 }
 
 TEST_CASE("BalancedBST getHeight returns 0 for empty tree", "[BalancedBST][height][empty]")
