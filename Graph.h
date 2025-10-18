@@ -4,15 +4,48 @@
 #include <utility>
 #include <queue>
 #include <limits>
-#include "DirectedGraph.h"
-#include "UndirectedGraph.h"
-#include "WeightedGraph.h"
 #include <unordered_map>
 using namespace std;
 
 template <class T>
 class Graph
 {
+private:
+    void dfsBuild(T u, std::map<T, bool> &visited, std::vector<std::pair<T, T>> &edges);
+    template <typename T>
+    void Graph<T>::dfsBuild(T u, std::map<T, bool> &visited, std::vector<std::pair<T, T>> &edges)
+    {
+        visited[u] = true;
+
+        for (const T &v : adj[u])
+        {
+            if (!visited[v])
+            {
+                edges.push_back({u, v});
+                dfsBuild(v, visited, edges);
+            }
+        }
+    }
+
+    template <typename T>
+    std::vector<std::pair<T, T>> Graph<T>::buildSpanningTree(T startVertex)
+    {
+        std::map<T, bool> visited;
+        std::vector<std::pair<T, T>> spanningEdges;
+
+        for (const auto &pair : adj)
+        {
+            visited[pair.first] = false;
+        }
+
+        if (adj.count(startVertex))
+        {
+            dfsBuild(startVertex, visited, spanningEdges);
+        }
+
+        return spanningEdges;
+    }
+
 protected:
     unordered_map<T, vector<T>> adj;
     unordered_map<T, bool> visited;
@@ -33,7 +66,8 @@ protected:
 
 public:
     Graph() {}
-
+    std::map<T, std::vector<T>> adj;
+    std::vector<std::pair<T, T>> buildSpanningTree(T startVertex);
     virtual void addEdge(T u, T v)
     {
         adj[u].push_back(v);
