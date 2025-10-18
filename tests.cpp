@@ -28,7 +28,9 @@ TEST_CASE("BinarySearchTree minValue returns smallest node", "[BST][minValue]")
     class BSTTester : public BinarySearchTree<int>
     {
     public:
-        Node *getMin(Node *node) { return minValue(node); }
+        using Node = typename BinarySearchTree<int>::Node;
+
+        Node *getMin(Node *node) { return this->minValue(node); }
         Node *getRoot() { return this->root; }
     };
     BSTTester tester;
