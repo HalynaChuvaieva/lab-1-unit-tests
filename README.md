@@ -20,4 +20,5 @@
 Виправлені помилки:
 
 1. У тесті BinarySearchTree minValue returns smallest node компілятор міг некоректно інтерпретувати Node всередині BSTTester, оскільки це було залежне ім'я типу в шаблонному класі, тому я використала ключове слово typename: using Node = typename BinarySearchTree::Node;
-2.
+2. Для того щоб підвищити надійність тестів, я написала дві допоміжні функції: captureCout - для чистого захоплення виводу; parseOutputToVector - для парсингу захопленого рядка у вектор цілих чисел;
+   Усі тести([BST][insert], [BST][delete], [BST][empty], [BST][duplicates], [BST][single], [Graph][addEdge], [Graph][spanningTree], [Graph][bfs], [Graph][bfs][isolated]), що використовували display(), тепер використовують парсинг.

@@ -191,6 +191,14 @@ TEST_CASE("Graph addEdge adds edges in both directions", "[Graph][addEdge]")
     g.addEdge(1, 2);
     g.addEdge(1, 3);
 
+    std::vector<int> adj1 = g.adj[1];
+    std::vector<int> adj2 = g.adj[2];
+    std::vector<int> adj3 = g.adj[3];
+
+    std::sort(adj1.begin(), adj1.end());
+    std::sort(adj2.begin(), adj2.end());
+    std::sort(adj3.begin(), adj3.end());
+
     REQUIRE(g.adj[1] == std::vector<int>{2, 3});
     REQUIRE(g.adj[2] == std::vector<int>{1});
     REQUIRE(g.adj[3] == std::vector<int>{1});
@@ -203,13 +211,8 @@ TEST_CASE("Graph buildSpanningTree builds a correct DFS tree", "[Graph][spanning
     g.addEdge(1, 3);
     g.addEdge(2, 4);
     g.addEdge(3, 5);
-
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    g.buildSpanningTree(1);
-    std::cout.rdbuf(oldCout);
-
-    std::string out = output.str();
+    std::string out = captureCout([&]()
+                                  { g.buildSpanningTree(1); });
     REQUIRE(out.find("Spanning tree consists of edges:") != std::string::npos);
 
     REQUIRE(
@@ -224,16 +227,12 @@ TEST_CASE("Graph bfs traverses in correct order", "[Graph][bfs]")
     g.addEdge(1, 3);
     g.addEdge(2, 4);
     g.addEdge(3, 5);
-
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    g.bfs(1);
-    std::cout.rdbuf(oldCout);
-
-    std::string expectedPrefix = "BFS traversal starting from 1: ";
-    REQUIRE(output.str().find(expectedPrefix) == 0);
-
-    REQUIRE(output.str().find("1 2 3 4 5") != std::string::npos);
+    std::string output = captureCout([&]()
+                                     { g.bfs(1); });
+    std::vector<int> actualTraversal = parseOutputToVector(output);
+    std::vector<int> expectedTraversal = {1, 2, 3, 4, 5};
+    REQUIRE(output.find("BFS traversal starting from 1:") != std::string::npos);
+    REQUIRE(actualTraversal == expectedTraversal);
 }
 
 TEST_CASE("Graph bfs handles isolated vertex", "[Graph][bfs][isolated]")
@@ -241,11 +240,11 @@ TEST_CASE("Graph bfs handles isolated vertex", "[Graph][bfs][isolated]")
     Graph<int> g;
     g.addEdge(1, 2);
     g.addEdge(3, 4);
+    std::string output = captureCout([&]()
+                                     { g.bfs(3); });
+    std::vector<int> actualTraversal = parseOutputToVector(output);
+    std::vector<int> expectedTraversal = {3, 4};
 
-    std::ostringstream output;
-    std::streambuf *oldCout = std::cout.rdbuf(output.rdbuf());
-    g.bfs(3);
-    std::cout.rdbuf(oldCout);
-
-    REQUIRE(output.str().find("BFS traversal starting from 3: 3 4") != std::string::npos);
+    REQUIRE(output.find("BFS traversal starting from 3:") != std::string::npos);
+    REQUIRE(actualTraversal == expectedTraversal);
 }
