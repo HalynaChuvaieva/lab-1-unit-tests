@@ -218,7 +218,7 @@ TEST_CASE("Graph addEdge adds edges in both directions", "[Graph][addEdge]")
     REQUIRE(g.adj[1] == std::vector<int>{2, 3});
     REQUIRE(g.adj[2] == std::vector<int>{1});
     REQUIRE(g.adj[3] == std::vector<int>{1});
-}g
+}ggi
 
 TEST_CASE("Graph buildSpanningTree returns correct DFS edges", "[Graph][spanningTree]")
 {

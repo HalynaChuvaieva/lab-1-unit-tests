@@ -3,19 +3,45 @@
 #include "BalancedBST.h"
 using namespace std;
 
+/**
+ * @brief Template class implementing a basic Binary Search Tree (BST).
+ * 
+ * @tparam T The data type stored in the tree.
+ * @example
+ * BinarySearchTree<int> bst;
+ * bst.insert(5);
+ * bst.insert(3);
+ * bst.insert(7);
+ * bst.display(); // Output: 3 5 7
+ */
 template <class T>
 class BinarySearchTree
 {
 protected:
+    /**
+     * @brief Internal structure representing a single tree node.
+     */
     struct Node
     {
-        T key;
-        Node *left;
-        Node *right;
+        T key;        ///< Node value.
+        Node *left;   ///< Pointer to the left child.
+        Node *right;  ///< Pointer to the right child.
+
+        /**
+         * @brief Constructs a new node.
+         * @param val The value stored in the node.
+         */
         Node(T val) : key(val), left(nullptr), right(nullptr) {}
     };
-    Node *root;
+    Node *root; ///< Pointer to the root of the tree.
 
+
+    /**
+     * @brief Inserts a new key into the subtree rooted at @p node.
+     * @param node The current node.
+     * @param key The value to insert.
+     * @return The updated subtree root.
+     */
     virtual Node *insert(Node *node, T key)
     {
         if (!node)
