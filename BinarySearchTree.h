@@ -53,6 +53,11 @@ protected:
         return node;
     }
 
+    /**
+     * @brief Finds the node with the minimum key in a subtree.
+     * @param node Root of the subtree.
+     * @return Pointer to the node with the smallest key.
+     */
     Node *minValue(Node *node)
     {
         Node *current = node;
@@ -61,6 +66,12 @@ protected:
         return current;
     }
 
+    /**
+     * @brief Deletes a node with the specified key.
+     * @param node The current subtree root.
+     * @param key The key to remove.
+     * @return Pointer to the updated subtree root.
+     */
     Node *deleteNode(Node *node, T key)
     {
         if (!node)
