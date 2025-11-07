@@ -3,7 +3,9 @@ name: Generate and Deploy Doxygen Docs
 on:
   push:
     branches:
-      - main  
+      - main          
+      - "**"          
+  pull_request:        
   workflow_dispatch:  
 
 jobs:
@@ -21,8 +23,10 @@ jobs:
         run: doxygen Doxyfile
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' 
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/html
           force_orphan: true
+
