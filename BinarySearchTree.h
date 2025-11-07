@@ -101,6 +101,10 @@ protected:
         return node;
     }
 
+    /**
+     * @brief Performs inorder traversal and prints all node keys.
+     * @param node Current node.
+     */
     void inorder(Node *node)
     {
         if (node)
@@ -112,10 +116,21 @@ protected:
     }
 
 public:
+    /// @brief Constructs an empty Binary Search Tree.
     BinarySearchTree() : root(nullptr) {}
-
+    /**
+     * @brief Inserts a new element into the tree.
+     * @param key Value to insert.
+     */
     virtual void insert(T key) { root = insert(root, key); }
+    /**
+     * @brief Removes an element from the tree.
+     * @param key Value to remove.
+     */
     void remove(T key) { root = deleteNode(root, key); }
+    /**
+     * @brief Prints all elements of the tree in sorted order.
+     */
     void display()
     {
         inorder(root);
