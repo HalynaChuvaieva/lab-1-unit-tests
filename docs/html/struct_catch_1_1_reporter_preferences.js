@@ -1,0 +1,6 @@
+var struct_catch_1_1_reporter_preferences =
+[
+    [ "shouldRedirectStdOut", "struct_catch_1_1_reporter_preferences.html#a434511c4080edbbc12e0d1c31ea14769", null ],
+    [ "shouldReportAllAssertions", "struct_catch_1_1_reporter_preferences.html#a10e13e10dfdc9a97dde0a72c573d7419", null ],
+    [ "shouldReportAllAssertionStarts", "struct_catch_1_1_reporter_preferences.html#a5b166c77ffa2af709ecd7ae0142990f0", null ]
+];
